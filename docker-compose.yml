@@ -1,0 +1,34 @@
+services:
+  crudlite_app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: crudlite-app
+    ports:
+      - "3500:80"
+    depends_on:
+      - database
+    networks:
+      - netcrudapp
+
+  database:
+    image: mariadb
+    container_name: crudlite-db
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: crudlitesystem
+      MYSQL_USER: crudlite
+      MYSQL_PASSWORD: crudlite
+    ports:
+      - "33060:3306"
+    networks:
+      - netcrudapp
+    volumes:
+      - db-volume:/var/lib/mysql
+      - ./others/bd.sql:/docker-entrypoint-initdb.d/bd.sql
+
+volumes:
+  db-volume:
+
+networks:
+  netcrudapp:
