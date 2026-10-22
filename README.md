@@ -20,7 +20,6 @@ Proyecto de egreso 2026.
 El sistema permite:
 - Gestión de documentación para pacientes.
 - Acceso mediante códigos QR.
-- Encuestas de satisfacción.
 
 ## Integrantes
 
