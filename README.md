@@ -11,7 +11,7 @@ Proyecto de egreso 2026.
 ## Instalación
 
 1. Clonar el repositorio.
-2. Importar la base de datos hospital.sql.
+2. Importar la base de datos sigsm.sql.
 3. Configurar la conexión a la base de datos.
 4. Ejecutar el proyecto en XAMPP.
 
@@ -21,7 +21,6 @@ El sistema permite:
 - Gestión de documentación para pacientes.
 - Acceso mediante códigos QR.
 - Encuestas de satisfacción.
-- Gestión y trazabilidad de ambulancias.
 
 ## Integrantes
 
