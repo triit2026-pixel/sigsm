@@ -8,6 +8,7 @@ $esAdmin = es_administrativo();
 // Las pantallas de alta, edición y QR forman parte de "Documentos"
 $enDocumentos = in_array($paginaActual, ['documentos.php', 'alta_documento.php', 'editar_documento.php', 'qr_documento.php'], true);
 $enEncuestas = in_array($paginaActual, ['encuestas.php', 'encuesta_form.php', 'encuesta_resultados.php', 'qr_encuesta.php'], true);
+$enUsuarios = in_array($paginaActual, ['usuarios.php', 'usuario_form.php'], true);
 ?>
 <!DOCTYPE html>
 <html lang="es">
@@ -80,7 +81,9 @@ $enEncuestas = in_array($paginaActual, ['encuestas.php', 'encuesta_form.php', 'e
             <a class="nav-link <?= $enDocumentos ? 'active' : '' ?>" href="documentos.php">Documentos</a>
             <a class="nav-link <?= $paginaActual === 'categorias.php' ? 'active' : '' ?>" href="categorias.php">Categorías</a>
             <a class="nav-link <?= $enEncuestas ? 'active' : '' ?>" href="encuestas.php">Encuestas</a>
+            <a class="nav-link <?= $enUsuarios ? 'active' : '' ?>" href="usuarios.php">Usuarios</a>
             <a class="nav-link <?= $paginaActual === 'actividad.php' ? 'active' : '' ?>" href="actividad.php">Actividad reciente</a>
+            <a class="nav-link <?= $paginaActual === 'cambiar_clave.php' ? 'active' : '' ?>" href="cambiar_clave.php">Cambiar mi contraseña</a>
         </nav>
 
         <form action="logout.php" method="post" class="mt-auto pt-3 border-top">
@@ -94,6 +97,7 @@ $enEncuestas = in_array($paginaActual, ['encuestas.php', 'encuesta_form.php', 'e
 <div class="container barra-medico pt-3 d-flex justify-content-end align-items-center gap-2 flex-wrap">
     <span class="small text-muted"><?= e($usuario['nombre']) ?></span>
     <span class="badge bg-success"><?= e(rol_etiqueta($usuario['rol'])) ?></span>
+    <a href="cambiar_clave.php" class="small">Cambiar contraseña</a>
     <form action="logout.php" method="post" class="d-inline">
         <?= csrf_campo() ?>
         <button type="submit" class="btn btn-sm btn-outline-secondary">Salir</button>

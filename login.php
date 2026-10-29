@@ -2,11 +2,43 @@
 require 'conexion.php';
 require 'includes/auth.php';
 
+$config = require __DIR__ . '/config.php';
+
+function verificarRecaptcha(string $secret): bool
+{
+    $token = $_POST['g-recaptcha-response'] ?? '';
+    if ($token === '' || $secret === '') {
+        return false;
+    }
+
+    $contexto = stream_context_create([
+        'http' => [
+            'method'  => 'POST',
+            'header'  => "Content-Type: application/x-www-form-urlencoded\r\n",
+            'content' => http_build_query([
+                'secret'   => $secret,
+                'response' => $token,
+                'remoteip' => $_SERVER['REMOTE_ADDR'] ?? '',
+            ]),
+            'timeout' => 5,
+        ],
+    ]);
+
+    $resp = @file_get_contents('https://www.google.com/recaptcha/api/siteverify', false, $contexto);
+    if ($resp === false) {
+        return false;
+    }
+
+    return !empty(json_decode($resp, true)['success']);
+}
+
 if (usuario_actual()) {
     redirigir('documentos.php');
 }
 
-$error = '';
+$error = ($_GET['motivo'] ?? '') === 'desactivado'
+    ? 'Tu usuario fue desactivado. Consulta con un administrativo.'
+    : '';
 $email = '';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -14,24 +46,29 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $email = trim($_POST['email'] ?? '');
     $clave = $_POST['clave'] ?? '';
 
-    $stmt = $pdo->prepare("SELECT id, nombre, email, password_hash, rol FROM usuario WHERE email = :e AND activo = 1");
-    $stmt->execute([':e' => $email]);
-    $u = $stmt->fetch();
-
-    if (!$u || !password_verify($clave, $u['password_hash'])) {
-        $error = 'Correo o contraseña incorrectos.';
-    } elseif (!in_array($u['rol'], ['medico', 'administrativo'], true)) {
-        $error = 'Tu usuario no tiene un rol asignado. Consulta con un administrativo.';
+    if (!verificarRecaptcha($config['recaptcha']['secret_key'] ?? '')) {
+        $error = 'Confirma que no eres un robot.';
     } else {
-        session_regenerate_id(true);
-        $_SESSION['usuario'] = [
-            'id'     => (int)$u['id'],
-            'nombre' => $u['nombre'],
-            'email'  => $u['email'],
-            'rol'    => $u['rol'],
-        ];
-        actividad_iniciar($pdo, $_SESSION['usuario']);
-        redirigir('documentos.php');
+        $stmt = $pdo->prepare("SELECT id, nombre, email, password_hash, rol, debe_cambiar_clave FROM usuario WHERE email = :e AND activo = 1");
+        $stmt->execute([':e' => $email]);
+        $u = $stmt->fetch();
+
+        if (!$u || !password_verify($clave, $u['password_hash'])) {
+            $error = 'Correo o contraseña incorrectos.';
+        } elseif (!in_array($u['rol'], ['medico', 'administrativo'], true)) {
+            $error = 'Tu usuario no tiene un rol asignado. Consulta con un administrativo.';
+        } else {
+            session_regenerate_id(true);
+            $_SESSION['usuario'] = [
+                'id'     => (int)$u['id'],
+                'nombre' => $u['nombre'],
+                'email'  => $u['email'],
+                'rol'    => $u['rol'],
+                'debe_cambiar_clave' => (int)$u['debe_cambiar_clave'],
+            ];
+            actividad_iniciar($pdo, $_SESSION['usuario']);
+            redirigir($u['debe_cambiar_clave'] ? 'cambiar_clave.php' : 'documentos.php');
+        }
     }
 }
 
@@ -41,6 +78,8 @@ require 'includes/header.php';
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600&family=Instrument+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<!-- [RECAPTCHA] Script de Google -->
+<script src="https://www.google.com/recaptcha/api.js" async defer></script>
 <style>
     :root {
         --lg-tinta: #12303a;
@@ -208,6 +247,16 @@ require 'includes/header.php';
     .campo-clave .ver-clave:focus-visible { outline: 2px solid var(--lg-petroleo); outline-offset: 1px; }
     .campo-clave .ver-clave svg { width: 20px; height: 20px; }
 
+    /* [RECAPTCHA] Espacio del widget y aviso si no se tildó */
+    .captcha-caja { margin-bottom: 1.5rem; }
+    .captcha-caja .g-recaptcha { transform-origin: 0 0; }
+    .captcha-aviso {
+        display: none;
+        margin: .5rem 0 0;
+        font-size: .88rem;
+        color: var(--lg-error);
+    }
+
     .login-form .btn-primary {
         background-color: var(--lg-petroleo);
         border-color: var(--lg-petroleo);
@@ -247,7 +296,6 @@ require 'includes/header.php';
         color: var(--lg-texto-suave);
     }
 
-    /* Entrada única al cargar */
     @media (prefers-reduced-motion: no-preference) {
         .login-form .contenido { animation: lg-entrada .5s ease-out both; }
         @keyframes lg-entrada {
@@ -266,6 +314,11 @@ require 'includes/header.php';
         .login-form   { flex: 1 1 100%; padding: 1.25rem; }
         .login-form .card-body { padding: 1.4rem; }
         .login-form h1 { font-size: 1.6rem; }
+    }
+
+    @media (max-width: 400px) {
+        .captcha-caja .g-recaptcha { transform: scale(.85); }
+        .captcha-caja { height: 70px; }
     }
 </style>
 
@@ -306,6 +359,13 @@ require 'includes/header.php';
                                 </button>
                             </div>
                         </div>
+
+                        <!-- [RECAPTCHA] Widget -->
+                        <div class="captcha-caja">
+                            <div class="g-recaptcha" data-sitekey="<?= e($config['recaptcha']['site_key'] ?? '') ?>"></div>
+                            <p class="captcha-aviso" id="captcha-aviso" role="alert">Confirma que no eres un robot.</p>
+                        </div>
+
                         <button type="submit" class="btn btn-primary w-100" id="btn-ingresar">Ingresar</button>
                     </form>
                 </div>
@@ -320,6 +380,7 @@ require 'includes/header.php';
     var boton = document.getElementById('ver-clave');
     var form  = document.getElementById('form-login');
     var envio = document.getElementById('btn-ingresar');
+    var aviso = document.getElementById('captcha-aviso');
 
     boton.addEventListener('click', function () {
         var visible = clave.type === 'text';
@@ -328,7 +389,14 @@ require 'includes/header.php';
         boton.setAttribute('aria-label', visible ? 'Mostrar contraseña' : 'Ocultar contraseña');
     });
 
-    form.addEventListener('submit', function () {
+    form.addEventListener('submit', function (ev) {
+    
+        if (typeof grecaptcha !== 'undefined' && !grecaptcha.getResponse()) {
+            ev.preventDefault();
+            aviso.style.display = 'block';
+            return;
+        }
+        aviso.style.display = 'none';
         envio.disabled = true;
         envio.textContent = 'Ingresando…';
     });

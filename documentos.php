@@ -111,6 +111,10 @@ require 'includes/header.php';
                     <td><?= e(date('d/m/Y', strtotime($d['fecha_actualizacion']))) ?></td>
                     <td><?= (int)$d['visitas'] ?></td>
                     <td class="text-end text-nowrap">
+                        <button type="button" class="btn btn-sm btn-outline-secondary"
+                                data-bs-toggle="modal" data-bs-target="#modalPrevia"
+                                data-url="previsualizar_documento.php?id=<?= (int)$d['id'] ?>"
+                                data-titulo="<?= e($d['titulo']) ?>">Ver</button>
                         <a href="qr_documento.php?id=<?= (int)$d['id'] ?>" class="btn btn-sm btn-outline-primary">QR</a>
                         <a href="editar_documento.php?id=<?= (int)$d['id'] ?>" class="btn btn-sm btn-outline-warning">Editar</a>
                         <?php if ($d['activo']): ?>
@@ -148,4 +152,39 @@ require 'includes/header.php';
         </ul>
     </nav>
 <?php endif; ?>
+<!-- Previsualización del documento -->
+<div class="modal fade" id="modalPrevia" tabindex="-1" aria-labelledby="modalPreviaTitulo" aria-hidden="true">
+    <div class="modal-dialog modal-xl modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title h5 text-break" id="modalPreviaTitulo">Vista previa</h2>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+            </div>
+            <div class="modal-body p-0">
+                <iframe id="marcoPrevia" title="Vista previa del documento"
+                        style="width:100%; height:75vh; border:0;"></iframe>
+            </div>
+            <div class="modal-footer">
+                <a id="abrirPrevia" href="#" target="_blank" rel="noopener" class="btn btn-outline-primary">Abrir en una pestaña nueva</a>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+(function () {
+    var modal = document.getElementById('modalPrevia');
+    var marco = document.getElementById('marcoPrevia');
+    modal.addEventListener('show.bs.modal', function (ev) {
+        var btn = ev.relatedTarget;
+        document.getElementById('modalPreviaTitulo').textContent = btn.getAttribute('data-titulo');
+        document.getElementById('abrirPrevia').href = btn.getAttribute('data-url');
+        marco.src = btn.getAttribute('data-url');
+    });
+    // Al cerrar se vacía el visor para que no siga cargado
+    modal.addEventListener('hidden.bs.modal', function () {
+        marco.src = 'about:blank';
+    });
+})();
+</script>
 <?php require 'includes/footer.php'; ?>
