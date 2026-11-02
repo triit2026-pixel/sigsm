@@ -1,0 +1,7 @@
+config.php
+*.pdf
+storage/documentos/*
+!storage/documentos/.gitkeep
+uploads/
+*.log
+*.zip
