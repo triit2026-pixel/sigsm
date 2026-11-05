@@ -1,9 +1,9 @@
 services:
-  crudlite_app:
+  triit_app:
     build:
       context: .
       dockerfile: Dockerfile
-    container_name: crudlite-app
+    container_name: triit_app
     ports:
       - "3500:80"
     depends_on:
@@ -13,22 +13,22 @@ services:
 
   database:
     image: mariadb
-    container_name: crudlite-db
+    container_name: triit-db
     environment:
       MYSQL_ROOT_PASSWORD: root
-      MYSQL_DATABASE: crudlitesystem
-      MYSQL_USER: crudlite
-      MYSQL_PASSWORD: crudlite
+      MYSQL_DATABASE: sigsm
+      MYSQL_USER: triit
+      MYSQL_PASSWORD: Pr0iec70Tr11t.pet26
     ports:
       - "33060:3306"
     networks:
-      - netcrudapp
+      - triit_red
     volumes:
       - db-volume:/var/lib/mysql
-      - ./others/bd.sql:/docker-entrypoint-initdb.d/bd.sql
+      - ./sql/bdcompleta.sql:/docker-entrypoint-initdb.d/bdcompleta.sql
 
 volumes:
   db-volume:
 
 networks:
-  netcrudapp:
+  triit_red:
