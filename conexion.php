@@ -15,5 +15,5 @@ try {
 } catch (PDOException $e) {
     error_log('Error de conexión a la BD: ' . $e->getMessage());
     http_response_code(500);
-    //exit('El servicio no está disponible en este momento.');
+    exit('El servicio no está disponible en este momento.');
 }
