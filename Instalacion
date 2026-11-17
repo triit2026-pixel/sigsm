@@ -1,0 +1,84 @@
+1. Manual de instalación
+Sistema de Información y Gestión de Servicios Médicos (S.I.G.S.M.)
+
+Proyecto de egreso 2026 – TRIIT
+1. Introducción
+Este manual explica los pasos necesarios para instalar y configurar el sistema S.I.G.S.M. en un equipo local, utilizando XAMPP como entorno de ejecución.
+2. Requisitos previos
+Antes de comenzar la instalación, es necesario contar con:
+- XAMPP instalado.
+- Apache y MySQL.
+- Navegador web.
+- Acceso al repositorio del proyecto.
+- Conexión a internet para descargar las dependencias necesarias.
+3. Tecnologías utilizadas
+- PHP (PDO).
+- MySQL / MariaDB.
+- Bootstrap 5.
+- HTML, CSS y JavaScript.
+- Google reCAPTCHA.
+- qrcodejs.
+- XAMPP.
+4. Procedimiento de instalación
+Paso 1. Descargar el proyecto
+
+Clonar el repositorio dentro de la carpeta C:\xampp\htdocs\:
+git clone https://github.com/triit2026-pixel/sigsm.git
+
+
+Paso 2. Iniciar los servicios
+
+Abrir el panel de XAMPP e iniciar los servicios Apache y MySQL.
+
+Paso 3. Crear la base de datos
+
+Ingresar a phpMyAdmin y crear una base de datos llamada sigsm, utilizando el cotejamiento utf8mb4_unicode_ci.
+
+Importar los siguientes archivos en orden:
+1. sql/schema.sql
+2. sql/datos_iniciales.sql
+Paso 4. Configurar la conexión
+
+Copiar conexion.example.php como conexion.php y completar los datos correspondientes a la conexión con MySQL.
+
+Si el proyecto utiliza config.example.php, copiarlo como config.php y completar:
+- Datos de conexión a la base de datos.
+- Claves de Google reCAPTCHA.
+- Dirección base_url del sistema.
+Paso 5. Configurar el almacenamiento
+
+Comprobar que la carpeta storage/documentos tenga permisos de escritura para permitir el almacenamiento de los archivos PDF.
+
+Paso 6. Configurar el acceso desde celulares
+
+Si se desea acceder desde otros dispositivos conectados a la misma red Wi-Fi, configurar base_url con la dirección IP local de la computadora.
+
+Ejemplo:
+http://192.168.1.4/sigsm
+
+
+Paso 7. Crear el usuario administrativo
+
+Si el archivo datos_iniciales.sql no incluye un usuario administrativo, será necesario crear uno en la tabla usuario, asignándole el rol administrativo.
+
+La contraseña debe almacenarse utilizando la función password_hash de PHP.
+
+Paso 8. Verificar la instalación
+
+Abrir el navegador e ingresar a:
+http://localhost/sigsm
+
+
+Comprobar que el sistema cargue correctamente y que la conexión con la base de datos funcione.
+5. Configuración para demostraciones externas
+Para permitir el acceso desde dispositivos que no se encuentren conectados a la misma red local, se puede utilizar Cloudflare Tunnel.
+
+Ejecutar el siguiente comando:
+cloudflared tunnel --url http://localhost:80
+
+
+Se generará una dirección pública temporal que permitirá acceder al sistema desde otros dispositivos.
+
+El código QR debe generarse después de iniciar el túnel, ya que la dirección puede cambiar cada vez que se inicia uno nuevo.
+6. Seguridad de la configuración
+El archivo config.php contiene información privada, como contraseñas y claves de acceso. Por este motivo, no debe publicarse ni compartirse dentro del repositorio.
