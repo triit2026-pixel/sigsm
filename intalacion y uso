@@ -1,0 +1,94 @@
+1. Manual de instalación y uso
+Parte técnica
+Sistema de Información y Gestión de Servicios Médicos (S.I.G.S.M.)
+
+Proyecto de egreso 2026 – TRIIT
+1. Introducción
+El S.I.G.S.M. es un sistema desarrollado por TRIIT para facilitar la gestión y administración de documentación y encuestas del Hospital de Clínicas.
+
+El sistema permite que el personal del hospital cargue documentos PDF y cree encuestas desde un panel administrativo. Por otro lado, los pacientes pueden acceder a la información desde sus celulares mediante un código QR general, sin necesidad de registrarse o iniciar sesión.
+2. Tecnologías utilizadas
+- PHP (PDO): lenguaje utilizado para desarrollar la lógica del sistema y conectar con la base de datos.
+- MySQL / MariaDB: sistema de gestión de bases de datos.
+- Bootstrap 5: framework utilizado para el diseño de las interfaces.
+- HTML, CSS y JavaScript: tecnologías utilizadas para la estructura, el diseño y la interacción de las páginas.
+- Google reCAPTCHA: protección del inicio de sesión.
+- qrcodejs: biblioteca utilizada para generar códigos QR.
+- XAMPP: entorno local utilizado para ejecutar Apache y MySQL.
+3. Requisitos previos
+Para instalar y ejecutar el sistema se necesita:
+- Tener instalado XAMPP.
+- Contar con Apache y MySQL.
+- Tener acceso al repositorio del proyecto.
+- Disponer de un navegador web.
+- Contar con una conexión a la misma red local para realizar pruebas desde celulares.
+4. Instalación del sistema
+Paso 1. Descargar el proyecto
+
+Clonar el repositorio dentro de la carpeta C:\xampp\htdocs\ utilizando:
+git clone https://github.com/triit2026-pixel/sigsm.git
+
+
+Paso 2. Iniciar los servicios
+
+Abrir el panel de XAMPP e iniciar los servicios Apache y MySQL.
+
+Paso 3. Crear la base de datos
+
+Ingresar a phpMyAdmin, crear una base de datos llamada sigsm y seleccionar el cotejamiento utf8mb4_unicode_ci.
+
+Luego importar los siguientes archivos, respetando el orden:
+1. sql/schema.sql
+2. sql/datos_iniciales.sql
+Paso 4. Configurar la conexión
+
+Copiar el archivo conexion.example.php como conexion.php y completar los datos correspondientes a la conexión con la base de datos.
+
+Si el proyecto utiliza también config.example.php, copiarlo como config.php y completar:
+- Datos de conexión a la base de datos.
+- Claves de Google reCAPTCHA.
+- Dirección base_url del sistema.
+El archivo config.php contiene información privada, como contraseñas y claves, por lo que no se incluye en el repositorio.
+
+Paso 5. Configurar el acceso desde celulares
+
+Para que los códigos QR funcionen desde otros dispositivos conectados a la misma red Wi-Fi, configurar base_url utilizando la dirección IP de la computadora.
+
+Por ejemplo:
+http://192.168.1.4/sigsm
+
+
+Paso 6. Permisos de almacenamiento
+
+Comprobar que la carpeta storage/documentos tenga permisos de escritura, ya que allí se almacenan los documentos PDF que se suben al sistema.
+
+Paso 7. Ingresar al sistema
+
+Abrir el navegador y acceder a:
+http://localhost/sigsm
+
+
+Si el archivo de datos iniciales no incluye un usuario administrativo, será necesario crear uno en la tabla usuario, asignándole el rol administrativo y almacenando su contraseña mediante password_hash de PHP.
+5. Estructura del proyecto
+Carpeta	Función
+paciente/	Contiene el portal público del paciente.
+includes/	Contiene funciones compartidas, autenticación y encabezados.
+sql/	Contiene los archivos de estructura y datos iniciales de la base de datos.
+storage/documentos/	Almacena los documentos PDF cargados.
+
+6. Generación del código QR del portal
+El sistema cuenta con una opción llamada QR del portal, desde la cual el usuario administrativo puede generar, descargar e imprimir un código QR general.
+
+Este código dirige a todos los pacientes al mismo portal público, desde donde pueden consultar documentación y responder encuestas activas.
+
+El sistema utiliza la dirección desde la cual se abrió la aplicación o la dirección configurada en base_url cuando se accede mediante localhost.
+7. Demostración desde dispositivos externos
+Para realizar demostraciones desde celulares que no estén conectados a la misma red local, se puede utilizar Cloudflare Tunnel.
+
+Ejecutar:
+cloudflared tunnel --url http://localhost:80
+
+
+Esto genera una dirección pública temporal que permite acceder al sistema desde otros dispositivos.
+
+Es importante generar el código QR después de iniciar el túnel, ya que la dirección pública puede cambiar cada vez que se inicia uno nuevo.
