@@ -1,0 +1,103 @@
+2. Manual de usuario
+Parte operativa
+Sistema de Información y Gestión de Servicios Médicos (S.I.G.S.M.)
+
+Proyecto de egreso 2026 – TRIIT
+1. Introducción
+El presente manual tiene como objetivo explicar cómo utilizar el sistema S.I.G.S.M., desarrollado para facilitar el acceso a la documentación y mejorar la gestión de encuestas dentro del Hospital de Clínicas.
+
+El sistema permite que el personal del hospital administre documentos y encuestas desde un panel de control, mientras que los pacientes pueden consultar la información desde sus celulares mediante un código QR.
+2. Acceso al sistema
+Para ingresar al panel de administración, el personal autorizado debe abrir el sistema desde un navegador web e introducir sus credenciales.
+
+El inicio de sesión cuenta con Google reCAPTCHA como medida de seguridad para evitar accesos automatizados.
+
+Una vez iniciada la sesión, el usuario podrá acceder a las funciones correspondientes según su rol.
+3. Usuarios y roles
+El sistema cuenta con dos tipos principales de usuarios:
+
+Médico
+- Puede acceder a la pantalla de Documentos.
+- Puede consultar la documentación disponible para su trabajo.
+Administrativo
+- Puede gestionar documentos.
+- Puede administrar categorías.
+- Puede crear, editar y gestionar encuestas.
+- Puede administrar usuarios.
+- Puede generar y descargar el código QR del portal.
+- Puede consultar la actividad reciente del sistema.
+4. Gestión de documentación
+El módulo de documentación permite al personal autorizado cargar y organizar archivos PDF para que los pacientes puedan consultarlos desde sus celulares.
+
+Sus principales funciones son:
+- Agregar documentos: permite subir nuevos archivos PDF al sistema.
+- Editar documentos: permite modificar la información de documentos existentes.
+- Eliminar documentos: permite realizar una baja lógica, evitando que el documento siga apareciendo como activo.
+- Organizar por categorías: permite clasificar los documentos según los diferentes servicios del hospital.
+- Buscar documentos: permite encontrar archivos mediante su título.
+- Filtrar documentos: permite visualizar documentos según su categoría y estado.
+- Generar códigos QR: permite crear códigos para acceder directamente a documentos específicos.
+- Consultar visitas: permite visualizar la cantidad de visitas o escaneos registrados para cada documento.
+5. Gestión de encuestas
+El módulo de encuestas permite crear cuestionarios para conocer las opiniones y experiencias de los pacientes.
+
+Las encuestas pueden contener diferentes tipos de preguntas:
+- Texto libre: permite que el paciente escriba una respuesta.
+- Escala del 1 al 5: permite valorar un servicio o experiencia.
+- Opción múltiple: permite seleccionar una respuesta entre varias opciones.
+Cada encuesta puede estar asociada a un área específica del hospital o ser general.
+
+Estados de las encuestas:
+Estado	Descripción
+Borrador	La encuesta todavía no está disponible para los pacientes.
+Activa	La encuesta aparece en el portal público y puede recibir respuestas.
+Cerrada	La encuesta deja de estar disponible para recibir respuestas.
+
+El personal administrativo también puede consultar las respuestas y visualizar los resultados obtenidos.
+6. Portal del paciente
+El portal del paciente es una sección pública del sistema diseñada para utilizarse desde celulares.
+
+Para ingresar, el paciente debe escanear el código QR general del hospital utilizando la cámara de su dispositivo.
+
+No necesita crear una cuenta ni iniciar sesión.
+
+El portal cuenta con dos secciones principales:
+
+Documentación
+- Permite consultar documentos disponibles.
+- Cuenta con un buscador por título.
+- Permite filtrar documentos por categoría.
+- Permite abrir y visualizar los archivos PDF desde el celular.
+Encuestas
+- Permite visualizar las encuestas activas.
+- Cuenta con un buscador por nombre.
+- Permite filtrar encuestas según el área del hospital.
+- Permite responder preguntas de manera anónima.
+7. Registro de actividad
+El sistema cuenta con un registro de actividad que permite al personal administrativo consultar información relacionada con los accesos al panel.
+
+Se pueden visualizar los siguientes datos:
+- Correo electrónico del usuario.
+- Rol correspondiente.
+- Hora de ingreso.
+- Hora de salida.
+- Dirección IP utilizada.
+También cuenta con filtros por fecha y hora para facilitar la búsqueda de registros específicos.
+8. Código QR del portal
+El personal administrativo puede acceder a la opción QR del portal desde el menú principal.
+
+Desde allí puede:
+1. Generar el código QR general.
+2. Descargar la imagen del código.
+3. Imprimirlo para colocarlo en diferentes sectores del hospital.
+Los pacientes podrán escanearlo para ingresar al portal y consultar la documentación o responder las encuestas disponibles.
+
+Diferencia entre ambos manuales
+Manual de instalación y uso	Manual de usuario
+Está dirigido al personal técnico.	Está dirigido al personal del hospital.
+Explica cómo instalar el sistema.	Explica cómo utilizar el sistema.
+Incluye configuración de PHP, MySQL y XAMPP.	Incluye gestión de documentos y encuestas.
+Explica cómo configurar los códigos QR.	Explica cómo generar y utilizar los códigos QR.
+Incluye requisitos técnicos y estructura del proyecto.	Incluye roles, funciones y acceso al portal.
+
+Una recomendación para el proyecto de egreso: mantenelos como dos documentos separados. El manual de instalación sirve para que otra persona pueda instalar S.I.G.S.M. desde cero, mientras que el manual de usuario sirve para que un funcionario del Hospital de Clínicas aprenda a manejarlo sin necesitar conocimientos de programación.
